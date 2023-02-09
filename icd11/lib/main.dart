@@ -4,7 +4,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icd11/classify.dart';
 import 'package:icd11/controller.dart';
+import 'package:icd11/no_image.dart';
+import 'package:icd11/scanned_text.dart';
+import 'package:icd11/widget_controller.dart';
 
 import 'about.dart';
 
@@ -40,6 +44,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   ImageController imageController = Get.put(ImageController());
 
+  CurrentScreen currentScreen = Get.put(CurrentScreen());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,33 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.info))
         ],
       ),
-      body: SizedBox(
-        child: imageController.image == null
-            ? Center(
-                child: Column(
-                  children: [
-                    SizedBox(height: 250),
-                    Container(
-                        height: 80,
-                        width: 80,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(75.0)),
-                        child: Image.asset("assets/cdc11.png")),
-                    SizedBox(height: 4),
-                    Text(
-                      "Take document photo for text extraction.",
-                      style:
-                          TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                    )
-                  ],
-                ),
-              )
-            : Text("Scanned Text: ${imageController.scannedText}",
-                style: TextStyle(fontSize: 22)),
-      ),
+      body: GetBuilder<CurrentScreen>(builder: (_) {
+        return SizedBox(child: currentScreen.currentWidget ?? NoImage());
+      }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Container(
-        width: 230,
+        width: 310,
         height: 65,
         decoration: BoxDecoration(shape: BoxShape.circle),
         child: Row(
@@ -119,6 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () async {
                     if (imageController.image != null) {
                       imageController.recogniseImage(imageController.image!);
+                      currentScreen.getWidget(ScannedText());
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           behavior: SnackBarBehavior.floating,
@@ -146,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   mini: true,
                   onPressed: () async {
                     if (imageController.scannedText != null) {
-                      imageController.recogniseImage(imageController.image!);
+                      currentScreen.getWidget(Classifier());
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           behavior: SnackBarBehavior.floating,
@@ -161,6 +147,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Text(
                   "Classify Icd-11",
+                  style: TextStyle(fontSize: 10),
+                )
+              ],
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Column(
+              children: [
+                FloatingActionButton(
+                  mini: true,
+                  onPressed: () async {
+                    imageController.image = null;
+                    // widgetController.getWidget(NoImage());
+                    setState(() {});
+                  },
+                  tooltip: 'Reset',
+                  child: const Icon(Icons.delete_sweep_outlined),
+                ),
+                Text(
+                  "Reset",
                   style: TextStyle(fontSize: 10),
                 )
               ],

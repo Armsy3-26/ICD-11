@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:icd11/controller.dart';
 
 class ScannedText extends StatefulWidget {
   const ScannedText({Key? key}) : super(key: key);
@@ -8,6 +10,8 @@ class ScannedText extends StatefulWidget {
 }
 
 class _ScannedTextState extends State<ScannedText> {
+  ImageController imageController = Get.put(ImageController());
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -21,10 +25,8 @@ class _ScannedTextState extends State<ScannedText> {
                   BoxDecoration(borderRadius: BorderRadius.circular(75.0)),
               child: Image.asset("assets/cdc11.png")),
           const SizedBox(height: 4),
-          const Text(
-            "Take document photo for text extraction.",
-            style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-          )
+          Text("Scanned Text: ${imageController.scannedText}",
+              style: const TextStyle(fontSize: 22)),
         ],
       ),
     );

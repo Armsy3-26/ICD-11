@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:icd11/controller.dart';
 
-class Classifier extends StatefulWidget {
-  const Classifier({Key? key}) : super(key: key);
+class TakenImage extends StatefulWidget {
+  const TakenImage({Key? key}) : super(key: key);
 
   @override
-  State<Classifier> createState() => _ClassifierState();
+  State<TakenImage> createState() => _TakenImageState();
 }
 
-class _ClassifierState extends State<Classifier> {
+class _TakenImageState extends State<TakenImage> {
+  ImageController imageController = Get.put(ImageController());
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -19,10 +23,10 @@ class _ClassifierState extends State<Classifier> {
               width: 80,
               decoration:
                   BoxDecoration(borderRadius: BorderRadius.circular(75.0)),
-              child: Image.asset("assets/cdc11.png")),
+              child: Image.file(imageController.image!)),
           const SizedBox(height: 4),
           const Text(
-            "Anaysing....",
+            "Click extract data to extract text.",
             style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
           )
         ],
